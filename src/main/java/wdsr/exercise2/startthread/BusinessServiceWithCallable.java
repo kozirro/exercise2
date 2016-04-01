@@ -1,7 +1,10 @@
 package wdsr.exercise2.startthread;
 
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 public class BusinessServiceWithCallable {
 	private final ExecutorService executorService;	
@@ -19,7 +22,27 @@ public class BusinessServiceWithCallable {
 	 * @return sum of 100 random numbers.
 	 */
 	public long sumOfRandomInts() throws InterruptedException, ExecutionException {	
-		long result = 0;
+		long result = 0;		
+		ArrayList<Future<Integer>> futures = new ArrayList<>();
+		
+		Callable<Integer> rand = new Callable<Integer>() {
+
+			@Override
+			public Integer call() throws Exception {
+				return helper.nextRandom();
+			}
+		};
+		
+		for(int i=0;i<100;i++){
+			
+			Future<Integer>futureResult = executorService.submit(rand);
+			futures.add(futureResult);
+			
+		}
+		
+		for(Future<Integer> f:futures){
+			result += f.get();
+		}
 		
 		// TODO Task: 
 		// 1. create 100 Callable objects that invoke helper.nextRandom in their call() method.
