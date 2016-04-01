@@ -1,27 +1,40 @@
 package wdsr.exercise2.counter;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Marek on 05.03.2016.
  * 
- * Task: use {@see java.util.concurrent.atomic.AtomicInteger} to make CountingFacadeWithAtomicTest pass. 
+ * Task: use {@see java.util.concurrent.locks.Lock} to make CountingFacadeWithLockTest pass. 
  */
-public class CountingFacadeWithAtomic implements CountingFacade {
+public class CountingFacadeWithLock implements CountingFacade {
 	private final BusinessService businessService;
 	
-	private AtomicInteger atomicInteger = new AtomicInteger(0);
-	int invocationCounter;
-	public CountingFacadeWithAtomic(BusinessService businessService) {
+	private int invocationCounter;
+	private final Lock lock = new ReentrantLock();
+	
+	public CountingFacadeWithLock(BusinessService businessService) {
 		this.businessService = businessService;
 	}
 		
 	public void countAndInvoke() {
-		invocationCounter = atomicInteger.incrementAndGet();
+		lock.lock();
+		try{
+			invocationCounter++;
+		} finally { 
+			lock.unlock();
+		}
 		businessService.executeAction();
 	}
 	
 	public int getCount() {
 		return invocationCounter;
 	}
+	
+	
+	
+	
+	
+	
 }
