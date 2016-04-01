@@ -1,5 +1,7 @@
 package wdsr.exercise2.counter;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Created by Marek on 05.03.2016.
  * 
@@ -8,14 +10,14 @@ package wdsr.exercise2.counter;
 public class CountingFacadeWithAtomic implements CountingFacade {
 	private final BusinessService businessService;
 	
-	private int invocationCounter;
-	
+	private AtomicInteger atomicInteger = new AtomicInteger(0);
+	int invocationCounter;
 	public CountingFacadeWithAtomic(BusinessService businessService) {
 		this.businessService = businessService;
 	}
 		
 	public void countAndInvoke() {
-		invocationCounter++;
+		invocationCounter = atomicInteger.incrementAndGet();
 		businessService.executeAction();
 	}
 	
